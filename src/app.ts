@@ -1,7 +1,7 @@
 import express, { Express } from 'express';
-import { ChatWaveServer } from './server';
-import dbConnection from './database';
-import { config } from './config';
+import { ChatWaveServer } from '@root/server';
+import dbConnection from '@root/database';
+import { config } from '@root/config';
 
 class Application {
     public initialize(): void {
