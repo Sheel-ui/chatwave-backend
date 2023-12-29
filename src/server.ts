@@ -20,6 +20,10 @@ import { Server } from "socket.io";
 import { createClient } from "redis";
 import { createAdapter } from "@socket.io/redis-adapter";
 import "express-async-errors";
+import {
+	CustomError,
+	IErrorResponse,
+} from "./shared/globals/helpers/errorHandler";
 
 const SERVER_PORT = 3000;
 
@@ -66,10 +70,33 @@ export class ChatWaveServer {
 	}
 
 	private routeMiddleware(app: Application): void {
-          routes(app);
-     }
+		routes(app);
+	}
 
-	private globalErrorHandler(app: Application): void {}
+	private globalErrorHandler(app: Application): void {
+		app.all("*", (req: Request, res: Response) => {
+			res.status(HTTP_STATUS.NOT_FOUND).json({
+				message: `${req.originalUrl} not found`,
+			});
+		});
+
+		app.use(
+			(
+				error: IErrorResponse,
+				req: Request,
+				res: Response,
+				next: NextFunction
+			) => {
+				console.log(error);
+				if (error instanceof CustomError) {
+					return res
+						.status(error.statusCode)
+						.json(error.serializeError());
+				}
+				next();
+			}
+		);
+	}
 
 	private async startServer(app: Application): Promise<void> {
 		try {
