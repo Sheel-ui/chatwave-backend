@@ -8,9 +8,11 @@ class Config {
 	public NODE_ENV: string | undefined;
 	public SECRET_KEY_ONE: string | undefined;
 	public SECRET_KEY_TWO: string | undefined;
+	public REDIS_HOST: string | undefined;
 
 	private readonly DEFAULT_DATABASE_URL =
 		"mongodb://localhost:27017/chatwave-backend";
+	private readonly DEFAULT_REDIS_HOST = "http://localhost:6379";
 	private readonly DEFAULT_JWT_TOKEN = "testtoken";
 	private readonly DEFAULT_NODE_ENV = "dev";
 	private readonly DEFAULT_SECRET_KEY_ONE = "firstsecret";
@@ -25,6 +27,7 @@ class Config {
 			process.env.SECRET_KEY_ONE || this.DEFAULT_SECRET_KEY_ONE;
 		this.SECRET_KEY_TWO =
 			process.env.SECRET_KEY_TWO || this.DEFAULT_SECRET_KEY_TWO;
+		this.SECRET_KEY_TWO = process.env.REDIS_HOST || this.DEFAULT_REDIS_HOST;
 	}
 
 	public validate(): void {
