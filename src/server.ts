@@ -20,12 +20,14 @@ import { Server } from "socket.io";
 import { createClient } from "redis";
 import { createAdapter } from "@socket.io/redis-adapter";
 import "express-async-errors";
+import Logger from "bunyan";
 import {
 	CustomError,
 	IErrorResponse,
 } from "./shared/globals/helpers/errorHandler";
 
 const SERVER_PORT = 3000;
+const log: Logger = config.createLogger("server");
 
 export class ChatWaveServer {
 	private app: Application;
@@ -87,7 +89,7 @@ export class ChatWaveServer {
 				res: Response,
 				next: NextFunction
 			) => {
-				console.log(error);
+				log.error(error);
 				if (error instanceof CustomError) {
 					return res
 						.status(error.statusCode)
@@ -105,7 +107,7 @@ export class ChatWaveServer {
 			this.startHttpServer(httpServer);
 			this.socketIOConn(socketIO);
 		} catch (error) {
-			console.log(error);
+			log.error(error);
 		}
 	}
 
@@ -125,8 +127,9 @@ export class ChatWaveServer {
 	}
 
 	private startHttpServer(httpServer: http.Server): void {
+		log.info(`Server started with pid ${process.pid}`);
 		httpServer.listen(SERVER_PORT, () => {
-			console.log(`Server runnig on port ${SERVER_PORT}`);
+			log.info(`Server runnig on port ${SERVER_PORT}`);
 		});
 	}
 
