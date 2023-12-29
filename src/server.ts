@@ -7,12 +7,13 @@ import {
 	NextFunction,
 } from "express";
 
+import { config } from "./config";
 import http from "http";
 import cors from "cors";
 import helmet from "helmet";
 import hpp from "hpp";
 import compression from "compression";
-import cookierSession from "cookie-session";
+import cookieSession from "cookie-session";
 import HTTP_STATUS from "http-status-codes";
 import "express-async-errors";
 
@@ -35,11 +36,11 @@ export class ChatWaveServer {
 
 	private securityMiddleware(app: Application): void {
 		app.use(
-			cookierSession({
+			cookieSession({
 				name: "session",
-				keys: ["test1", "test2"],
+				keys: [config.SECRET_KEY_ONE!, config.SECRET_KEY_TWO!],
 				maxAge: 24 * 7 * 3600000,
-				secure: false,
+				secure: config.NODE_ENV !== 'dev'
 			})
 		);
 		app.use(hpp());
