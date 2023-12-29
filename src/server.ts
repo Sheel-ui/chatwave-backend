@@ -8,6 +8,7 @@ import {
 } from "express";
 
 import { config } from "./config";
+import routes from "./routes";
 import http from "http";
 import cors from "cors";
 import helmet from "helmet";
@@ -64,7 +65,9 @@ export class ChatWaveServer {
 		app.use(urlencoded({ extended: true, limit: "50mb" }));
 	}
 
-	private routeMiddleware(app: Application): void {}
+	private routeMiddleware(app: Application): void {
+          routes(app);
+     }
 
 	private globalErrorHandler(app: Application): void {}
 
