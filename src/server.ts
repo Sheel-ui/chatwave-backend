@@ -115,6 +115,6 @@ export class ChatWaveServer {
     }
 
     private socketIOConn(io: Server): void {
-        log.info('socket connections')
+        log.info('socket connections');
     }
 }
