@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@socket.io/redis-adapter": "^8.2.1",
+    "bcryptjs": "^2.4.3",
     "bunyan": "^1.8.15",
     "cloudinary": "^1.41.1",
     "compression": "^1.7.4",
@@ -35,6 +36,7 @@
     "typescript-transform-paths": "^3.4.6"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/bunyan": "^1.8.11",
     "@types/compression": "^1.7.5",
     "@types/cookie-session": "^2.0.48",
