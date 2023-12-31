@@ -8,10 +8,11 @@ import { BadRequestError } from '@global/helpers/errorHandler';
 import { Helpers } from '@global/helpers/helpers';
 import { UploadApiResponse } from 'cloudinary';
 import { uploads } from '@global/helpers/cloudinaryUpload';
+import HTTP_STATUS from 'http-status-codes';
 
 export class SignUp {
     @joiValidation(signupSchema)
-    public async create(req: Request, res: Request): Promise<void> {
+    public async create(req: Request, res: Response): Promise<void> {
         const { username, email, password, avatarColor, avatarImage } = req.body;
         const checkIfUserExist: IAuthDocument = await authService.getUserByUsernameOrEmail(username, email);
         if (checkIfUserExist) {
@@ -32,6 +33,8 @@ export class SignUp {
         if (!result?.public_id) {
             throw new BadRequestError('File upload Error. Try again!');
         }
+
+        res.status(HTTP_STATUS.CREATED).json({ message: 'User created successfully' });
     }
 
     private signUpData(data: ISignUpData): IAuthDocument {

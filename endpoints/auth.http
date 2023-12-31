@@ -1,0 +1,16 @@
+@baseUrl = http://localhost:3000
+@urlPath = api/v1
+
+###
+POST {{baseUrl}}/{{urlPath}}/signup
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+    "username": "",
+    "password": "",
+    "email": "",
+    "avatarColor": "",
+    "avatarImage": "<base64-image>"
+}
