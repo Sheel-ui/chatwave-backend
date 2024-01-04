@@ -3,7 +3,7 @@ import { userWorker } from '@worker/userWorker';
 
 class UserQueue extends BaseQueue {
     constructor() {
-        super('auth');
+        super('user');
         // concurrency is 5
         this.processJob('addUserToDB', 5, userWorker.addUserToDB);
     }
