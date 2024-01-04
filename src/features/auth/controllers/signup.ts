@@ -2,8 +2,8 @@ import { ObjectId } from 'mongodb';
 import { Request, Response } from 'express';
 import { joiValidation } from '@global/decorators/joiValidation.decorators';
 import { signupSchema } from '@auth/schemes/signup';
-import { IAuthDocument, ISignUpData } from '@auth/interfaces/auth.interface';
-import { authService } from '@service/db/auth.service';
+import { IAuthDocument, ISignUpData } from '@auth/interfaces/authInterface';
+import { authService } from '@service/db/authService';
 import { BadRequestError } from '@global/helpers/errorHandler';
 import { Helpers } from '@global/helpers/helpers';
 import { UploadApiResponse } from 'cloudinary';
@@ -14,6 +14,7 @@ import { UserCache } from '@service/redis/userCache';
 import { config } from '@root/config';
 import { omit } from 'lodash';
 import { authQueue } from '@service/queues/authQueue';
+import { userQueue } from '@service/queues/userQueue';
 
 const userCache: UserCache = new UserCache();
 
@@ -57,6 +58,8 @@ export class SignUp {
         // Add to database
         omit(userDataForCache, ['uId', 'username', 'email', 'avatarColor', 'password']);
         authQueue.addAuthUserJob('addAuthUserToDB', { value: userDataForCache });
+        userQueue.addUserJob('addUserToDB', { value: userDataForCache });
+
         res.status(HTTP_STATUS.CREATED).json({ message: 'User created successfully', authData });
     }
 

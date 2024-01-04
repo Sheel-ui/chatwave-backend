@@ -4,7 +4,7 @@ import { ExpressAdapter } from '@bull-board/express';
 import { config } from '@root/config';
 import { BullAdapter } from '@bull-board/api/bullAdapter';
 import { createBullBoard } from '@bull-board/api';
-import { IAuthJob } from '@auth/interfaces/auth.interface';
+import { IAuthJob } from '@auth/interfaces/authInterface';
 
 type IBaseJobData = IAuthJob;
 
