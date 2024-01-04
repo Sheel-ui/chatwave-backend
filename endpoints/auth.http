@@ -12,7 +12,7 @@ withCredentials: true
     "password": "",
     "email": "",
     "avatarColor": "",
-    "avatarImage": "<base64Img>"
+    "avatarImage": "<base64Image>"
 }
 
 ###
@@ -25,3 +25,16 @@ withCredentials: true
     "username": "",
     "password": ""
 }
+
+###
+GET {{baseUrl}}/{{urlPath}}/signout
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+
+###
+GET {{baseUrl}}/{{urlPath}}/currentuser
+Content-Type: application/json
+Accept: application/json
+withCredentials: true

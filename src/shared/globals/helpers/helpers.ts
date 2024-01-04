@@ -11,6 +11,7 @@ export class Helpers {
         return str.toLowerCase();
     }
 
+    // Generate random int of given length
     static generateRandomIntegers(integerLength: number): number {
         const characters = '0123456789';
         let result = ' ';
@@ -19,5 +20,15 @@ export class Helpers {
             result += characters.charAt(Math.floor(Math.random() * charactersLength));
         }
         return parseInt(result, 10);
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    static parseJson(prop: string): any {
+        try {
+            JSON.parse(prop);
+        } catch (error) {
+            return prop;
+        }
+        return JSON.parse(prop);
     }
 }
