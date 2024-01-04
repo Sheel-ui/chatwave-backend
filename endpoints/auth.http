@@ -12,5 +12,16 @@ withCredentials: true
     "password": "",
     "email": "",
     "avatarColor": "",
-    "avatarImage": "<base64-image>"
+    "avatarImage": "<base64Img>"
+}
+
+###
+POST {{baseUrl}}/{{urlPath}}/signin
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+    "username": "",
+    "password": ""
 }
