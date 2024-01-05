@@ -7,7 +7,7 @@ import { authService } from '@service/db/authService';
 import { loginSchema } from '@auth/schemes/signin';
 import { IAuthDocument } from '@auth/interfaces/authInterface';
 import { BadRequestError } from '@global/helpers/errorHandler';
-import { IUserDocument } from '@user/interfaces/user.interface';
+import { IUserDocument } from '@user/interfaces/userInterface';
 import { userService } from '@service/db/userService';
 
 export class SignIn {
