@@ -1,5 +1,5 @@
 import { BaseCache } from '@service/redis/baseCache';
-import { IUserDocument } from '@user/interfaces/user.interface';
+import { IUserDocument } from '@user/interfaces/userInterface';
 import Logger from 'bunyan';
 import { config } from '@root/config';
 import { ServerError } from '@global/helpers/errorHandler';

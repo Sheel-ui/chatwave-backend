@@ -5,7 +5,7 @@ import { config } from '@root/config';
 import { BullAdapter } from '@bull-board/api/bullAdapter';
 import { createBullBoard } from '@bull-board/api';
 import { IAuthJob } from '@auth/interfaces/authInterface';
-import { IEmailJob } from '@user/interfaces/user.interface';
+import { IEmailJob } from '@user/interfaces/userInterface';
 
 type IBaseJobData = IAuthJob | IEmailJob;
 
