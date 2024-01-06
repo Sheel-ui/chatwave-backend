@@ -7,6 +7,7 @@ import { IUserDocument } from '@user/interfaces/userInterface';
 import { IFollowerData } from '@follower/interfaces/followerInterface';
 import mongoose from 'mongoose';
 import { socketIOFollowerObject } from '@socket/follower';
+import { followerQueue } from '@service/queues/followerQueue';
 
 const followerCache: FollowerCache = new FollowerCache();
 const userCache: UserCache = new UserCache();
@@ -38,6 +39,12 @@ export class Add {
         );
         await Promise.all([addFollowerToCache, addFolloweeToCache]);
 
+        followerQueue.addFollowerJob('addFollowerToDB', {
+            keyOne: `${req.currentUser!.userId}`,
+            keyTwo: `${followerId}`,
+            username: req.currentUser!.username,
+            followerDocumentId: followerObjectId
+        });
         res.status(HTTP_STATUS.OK).json({ message: 'Following user now' });
     }
 
