@@ -1,0 +1,87 @@
+@baseUrl = http://localhost:3000
+@urlPath = api/v1
+
+###
+POST {{baseUrl}}/{{urlPath}}/post
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+    "post": "",
+    "bgColor": "",
+    "privacy": "",
+    "gifUrl": "",
+    "profilePicture": "",
+    "feelings": ""
+}
+
+###
+POST {{baseUrl}}/{{urlPath}}/post/image/post
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+    "post": "",
+    "bgColor": "",
+    "privacy": "",
+    "gifUrl": "",
+    "profilePicture": "",
+    "feelings": "",
+    "image": ""
+}
+
+
+###
+GET {{baseUrl}}/{{urlPath}}/post/all/1
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/post/images/1
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+DELETE {{baseUrl}}/{{urlPath}}/post/6598861b07c88ead1d5310ab
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+PUT {{baseUrl}}/{{urlPath}}/post/65988a3f8f0a36a09c3a70e0
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+    "post": "",
+    "bgColor": "",
+    "privacy": "",
+    "gifUrl": "",
+    "profilePicture": "",
+    "feelings": "",
+    "imgId": "",
+    "imgVersion": ""
+}
+
+###
+PUT {{baseUrl}}/{{urlPath}}/post/image/65988a3f8f0a36a09c3a70e0
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+    "post": "",
+    "bgColor": "",
+    "privacy": "",
+    "gifUrl": "",
+    "profilePicture": "",
+    "feelings": "",
+    "image": "",
+    "imgId": "",
+    "imgVersion": "",
+}
