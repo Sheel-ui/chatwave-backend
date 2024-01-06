@@ -7,8 +7,9 @@ import { createBullBoard } from '@bull-board/api';
 import { IAuthJob } from '@auth/interfaces/authInterface';
 import { IEmailJob } from '@user/interfaces/userInterface';
 import { IPostJobData } from '@post/interfaces/postInterface';
+import { IReactionJob } from '@reaction/interfaces/reactionInterface';
 
-type IBaseJobData = IAuthJob | IEmailJob | IPostJobData;
+type IBaseJobData = IAuthJob | IEmailJob | IPostJobData | IReactionJob;
 
 let bullAdapters: BullAdapter[] = [];
 export let serverAdapter: ExpressAdapter;

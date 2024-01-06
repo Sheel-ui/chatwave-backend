@@ -3,19 +3,18 @@ import { authMiddleware } from '@global/helpers/authMiddleware';
 import { Add } from '@reaction/controllers/addReaction';
 
 class ReactionRoutes {
-  private router: Router;
+    private router: Router;
 
-  constructor() {
-    this.router = express.Router();
-  }
+    constructor() {
+        this.router = express.Router();
+    }
 
-  public routes(): Router {
+    public routes(): Router {
+        // POST
+        this.router.post('/post/reaction', authMiddleware.checkAuthentication, Add.prototype.reaction);
 
-    // POST
-    this.router.post('/post/reaction', authMiddleware.checkAuthentication, Add.prototype.reaction);
-
-    return this.router;
-  }
+        return this.router;
+    }
 }
 
 export const reactionRoutes: ReactionRoutes = new ReactionRoutes();
