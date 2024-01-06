@@ -1,5 +1,4 @@
 import { Application, json, urlencoded, Response, Request, NextFunction } from 'express';
-
 import { config } from '@root/config';
 import routes from '@root/routes';
 import http from 'http';
@@ -15,6 +14,7 @@ import { createAdapter } from '@socket.io/redis-adapter';
 import 'express-async-errors';
 import Logger from 'bunyan';
 import { CustomError, IErrorResponse } from '@global/helpers/errorHandler';
+import { SocketIOPostHandler } from '@socket/post';
 
 const SERVER_PORT = 3000;
 const log: Logger = config.createLogger('server');
@@ -115,6 +115,7 @@ export class ChatWaveServer {
     }
 
     private socketIOConn(io: Server): void {
-        log.info('socket connections');
+        const postSocketHandler: SocketIOPostHandler = new SocketIOPostHandler(io);
+        postSocketHandler.listen();
     }
 }

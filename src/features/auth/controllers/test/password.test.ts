@@ -9,7 +9,7 @@ import { authService } from '@service/db/authService';
 const WRONG_EMAIL = 'test@email.com';
 const CORRECT_EMAIL = 'test@test.com';
 const INVALID_EMAIL = 'test';
-const CORRECT_PASSWORD = 'manny';
+const CORRECT_PASSWORD = 'test1';
 
 jest.mock('@service/queues/baseQueue');
 jest.mock('@service/queues/emailQueue');
