@@ -3,6 +3,7 @@ import { authMiddleware } from '@global/helpers/authMiddleware';
 import { Create } from '@post/controllers/createPost';
 import { Get } from '@post/controllers/getPost';
 import { Delete } from '@post/controllers/deletePost';
+import { Update } from '@post/controllers/updatePost';
 
 class PostRoutes {
     private router: Router;
@@ -20,6 +21,9 @@ class PostRoutes {
         // POST
         this.router.post('/post', authMiddleware.checkAuthentication, Create.prototype.post);
         this.router.post('/post/image/post', authMiddleware.checkAuthentication, Create.prototype.post);
+
+        // UPDATE
+        this.router.put('/post/:postId', authMiddleware.checkAuthentication, Update.prototype.posts);
 
         // DELETE
         this.router.delete('/post/:postId', authMiddleware.checkAuthentication, Delete.prototype.post);
