@@ -6,6 +6,7 @@ import { UserCache } from '@service/redis/userCache';
 import { IUserDocument } from '@user/interfaces/userInterface';
 import { IFollowerData } from '@follower/interfaces/followerInterface';
 import mongoose from 'mongoose';
+import { socketIOFollowerObject } from '@socket/follower';
 
 const followerCache: FollowerCache = new FollowerCache();
 const userCache: UserCache = new UserCache();
@@ -25,6 +26,7 @@ export class Add {
 
         const followerObjectId: ObjectId = new ObjectId();
         const addFolloweeData: IFollowerData = Add.prototype.userData(response[0]);
+        socketIOFollowerObject.emit('add follower', addFolloweeData);
 
         const addFollowerToCache: Promise<void> = followerCache.saveFollowerToCache(
             `following:${req.currentUser!.userId}`,

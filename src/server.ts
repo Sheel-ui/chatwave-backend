@@ -15,6 +15,7 @@ import 'express-async-errors';
 import Logger from 'bunyan';
 import { CustomError, IErrorResponse } from '@global/helpers/errorHandler';
 import { SocketIOPostHandler } from '@socket/post';
+import { SocketIOFollowerHandler } from '@socket/follower';
 
 const SERVER_PORT = 3000;
 const log: Logger = config.createLogger('server');
@@ -116,6 +117,9 @@ export class ChatWaveServer {
 
     private socketIOConn(io: Server): void {
         const postSocketHandler: SocketIOPostHandler = new SocketIOPostHandler(io);
+        const followerSocketHandler: SocketIOFollowerHandler = new SocketIOFollowerHandler(io);
+
         postSocketHandler.listen();
+        followerSocketHandler.listen();
     }
 }
