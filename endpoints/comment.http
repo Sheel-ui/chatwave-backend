@@ -1,4 +1,4 @@
-@baseUrl = http://localhost:5000
+@baseUrl = http://localhost:3000
 @urlPath = api/v1
 
 ###
@@ -26,7 +26,7 @@ Accept: application/json
 withCredentials: true
 
 {
-  "userTo": "",
+   "userTo": "",
   "postId": "",
   "comment": "",
   "profilePicture": "<cloudinary-user-profile-picture-url>"

@@ -46,19 +46,19 @@ Accept: application/json
 withCredentials: true
 
 ###
-DELETE {{baseUrl}}/{{urlPath}}/post/6598861b07c88ead1d5310ab
+DELETE {{baseUrl}}/{{urlPath}}/post/<postId>
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
 
 ###
-PUT {{baseUrl}}/{{urlPath}}/post/65988a3f8f0a36a09c3a70e0
+PUT {{baseUrl}}/{{urlPath}}/post/<postId>
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
 
 {
-    "post": "",
+    "post": "test3post",
     "bgColor": "",
     "privacy": "",
     "gifUrl": "",
@@ -69,7 +69,7 @@ withCredentials: true
 }
 
 ###
-PUT {{baseUrl}}/{{urlPath}}/post/image/65988a3f8f0a36a09c3a70e0
+PUT {{baseUrl}}/{{urlPath}}/post/image/<postId>
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
