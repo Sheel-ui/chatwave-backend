@@ -17,7 +17,7 @@ class ReactionService {
         if (previousReaction) {
             updatedReactionObject = omit(reactionObject, ['_id']);
         }
-        const updatedReaction: [IUserDocument, IReactionDocument, IPostDocument] = (await Promise.all([
+        const updatedReaction: [IUserDocument, IReactionDocument, IPostDocument] = await Promise.all([
             userCache.getUserFromCache(`${userTo}`),
             ReactionModel.replaceOne({ postId, type: previousReaction, username }, updatedReactionObject, { upsert: true }),
             PostModel.findOneAndUpdate(
@@ -30,7 +30,7 @@ class ReactionService {
                 },
                 { new: true }
             )
-        ])) as unknown as [IUserDocument, IReactionDocument, IPostDocument];
+        ]) as unknown as [IUserDocument, IReactionDocument, IPostDocument];
     }
 
     public async removeReactionDataFromDB(reactionData: IReactionJob): Promise<void> {

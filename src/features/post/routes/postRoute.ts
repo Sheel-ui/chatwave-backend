@@ -20,7 +20,7 @@ class PostRoutes {
 
         // POST
         this.router.post('/post', authMiddleware.checkAuthentication, Create.prototype.post);
-        this.router.post('/post/image/post', authMiddleware.checkAuthentication, Create.prototype.post);
+        this.router.post('/post/image/post', authMiddleware.checkAuthentication, Create.prototype.postWithImage);
 
         // UPDATE
         this.router.put('/post/:postId', authMiddleware.checkAuthentication, Update.prototype.posts);
