@@ -13,7 +13,6 @@ class FollowerRoutes {
     }
 
     public routes(): Router {
-
         this.router.get('/user/following', authMiddleware.checkAuthentication, Get.prototype.userFollowing);
         this.router.get('/user/followers/:userId', authMiddleware.checkAuthentication, Get.prototype.userFollowers);
 
