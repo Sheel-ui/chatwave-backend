@@ -9,6 +9,7 @@ import { IPostDocument } from '@post/interfaces/postInterface';
 import { UploadApiResponse } from 'cloudinary';
 import { BadRequestError } from '@global/helpers/errorHandler';
 import { uploads } from '@global/helpers/cloudinaryUpload';
+import { imageQueue } from '@service/queues/imageQueue';
 
 const postCache: PostCache = new PostCache();
 
@@ -94,6 +95,11 @@ export class Update {
         const postUpdated: IPostDocument = await postCache.updatePostInCache(postId, updatedPost);
         socketIOPostObject.emit('update post', postUpdated, 'posts');
         postQueue.addPostJob('updatePostInDB', { key: postId, value: postUpdated });
+        imageQueue.addImageJob('addImageToDB', {
+            key: `${req.currentUser!.userId}`,
+            imgId: result.public_id,
+            imgVersion: result.version.toString()
+          });
         return result;
     }
 }
