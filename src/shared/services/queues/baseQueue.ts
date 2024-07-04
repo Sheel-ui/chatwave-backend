@@ -11,8 +11,9 @@ import { IReactionJob } from '@reaction/interfaces/reactionInterface';
 import { ICommentJob } from '@comment/interfaces/commentInterface';
 import { INotificationJobData } from '@notification/interfaces/notificationInterface';
 import { IFileImageJobData } from '@image/interfaces/imageInterface';
+import { IChatJobData, IMessageData } from '@chat/interfaces/chatInterface';
 
-type IBaseJobData = IAuthJob | IEmailJob | IPostJobData | IReactionJob | ICommentJob | INotificationJobData | IFileImageJobData;
+type IBaseJobData = IAuthJob | IEmailJob | IPostJobData | IReactionJob | ICommentJob | INotificationJobData | IFileImageJobData | IChatJobData | IMessageData;
 
 let bullAdapters: BullAdapter[] = [];
 export let serverAdapter: ExpressAdapter;
