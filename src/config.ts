@@ -19,6 +19,7 @@ class Config {
     public SENDGRID_API_KEY: string | undefined;
     public SENDER_SENDER: string | undefined;
     public CLIENT_URL: string | undefined;
+    public EC2_URL: string | undefined;
 
     private readonly DEFAULT_DATABASE_URL = 'mongodb://localhost:27017/chatwave-backend';
     private readonly DEFAULT_REDIS_HOST = 'http://localhost:6379';
@@ -50,6 +51,7 @@ class Config {
         this.SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || this.DEFAULT_SENDGRID_API_KEY;
         this.SENDER_SENDER = process.env.SENDER_SENDER || this.DEFAULT_SENDER_SENDER;
         this.CLIENT_URL = process.env.CLIENT_URL || this.DEFAULT_CLIENT_URL;
+        this.EC2_URL = process.env.EC2_URL || '';
     }
 
     public createLogger(name: string): bunyan {
