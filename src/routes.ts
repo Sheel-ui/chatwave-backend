@@ -9,6 +9,7 @@ import { serverAdapter } from '@service/queues/baseQueue';
 import { Application } from 'express';
 import { notificationRoutes } from '@notification/routes/notificationRoutes';
 import { imageRoutes } from '@image/routes/imageRoutes';
+import { chatRoutes } from '@chat/routes/chatRoutes';
 
 const BASE_PATH = '/api/v1';
 
@@ -25,6 +26,7 @@ export default (app: Application) => {
         app.use(BASE_PATH, authMiddleware.verifyUser, followerRoutes.routes());
         app.use(BASE_PATH, authMiddleware.verifyUser, notificationRoutes.routes());
         app.use(BASE_PATH, authMiddleware.verifyUser, imageRoutes.routes());
+        app.use(BASE_PATH, authMiddleware.verifyUser, chatRoutes.routes());
     };
     routes();
 };
