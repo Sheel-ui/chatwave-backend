@@ -21,7 +21,7 @@ export abstract class CustomError extends Error {
         super(message);
     }
 
-    serializeError(): IError {
+    serializeErrors(): IError {
         return {
             message: this.message,
             statusCode: this.statusCode,
@@ -77,6 +77,15 @@ export class FileTooLongError extends CustomError {
 
 export class ServerError extends CustomError {
     statusCode = HTTP_STATUS.SERVICE_UNAVAILABLE;
+    status = 'error';
+
+    constructor(message: string) {
+        super(message);
+    }
+}
+
+export class JoiReqestValidationError extends CustomError {
+    statusCode = HTTP_STATUS.BAD_REQUEST;
     status = 'error';
 
     constructor(message: string) {

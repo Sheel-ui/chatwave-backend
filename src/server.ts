@@ -1,11 +1,11 @@
 import { Application, json, urlencoded, Response, Request, NextFunction } from 'express';
-
-import { config } from './config';
-import routes from './routes';
+import { config } from '@root/config';
+import routes from '@root/routes';
 import http from 'http';
 import cors from 'cors';
 import helmet from 'helmet';
 import hpp from 'hpp';
+import apiStats from 'swagger-stats';
 import compression from 'compression';
 import cookieSession from 'cookie-session';
 import HTTP_STATUS from 'http-status-codes';
@@ -14,7 +14,13 @@ import { createClient } from 'redis';
 import { createAdapter } from '@socket.io/redis-adapter';
 import 'express-async-errors';
 import Logger from 'bunyan';
-import { CustomError, IErrorResponse } from './shared/globals/helpers/errorHandler';
+import { CustomError, IErrorResponse } from '@global/helpers/errorHandler';
+import { SocketIOPostHandler } from '@socket/post';
+import { SocketIOFollowerHandler } from '@socket/follower';
+import { SocketIOUserHandler } from '@socket/user';
+import { SocketIONotificationHandler } from '@socket/notification';
+import { SocketIOImageHandler } from '@socket/image';
+import { SocketIOChatHandler } from '@socket/chat';
 
 const SERVER_PORT = 3000;
 const log: Logger = config.createLogger('server');
@@ -30,6 +36,7 @@ export class ChatWaveServer {
         this.securityMiddleware(this.app);
         this.standardMiddleware(this.app);
         this.routeMiddleware(this.app);
+        this.apiMonitoring(this.app);
         this.globalErrorHandler(this.app);
         this.startServer(this.app);
     }
@@ -65,6 +72,14 @@ export class ChatWaveServer {
         routes(app);
     }
 
+    private apiMonitoring(app: Application): void {
+        app.use(
+            apiStats.getMiddleware({
+                uriPath: '/api-monitoring'
+            })
+        );
+    }
+
     private globalErrorHandler(app: Application): void {
         app.all('*', (req: Request, res: Response) => {
             res.status(HTTP_STATUS.NOT_FOUND).json({
@@ -75,13 +90,16 @@ export class ChatWaveServer {
         app.use((error: IErrorResponse, req: Request, res: Response, next: NextFunction) => {
             log.error(error);
             if (error instanceof CustomError) {
-                return res.status(error.statusCode).json(error.serializeError());
+                return res.status(error.statusCode).json(error.serializeErrors());
             }
             next();
         });
     }
 
     private async startServer(app: Application): Promise<void> {
+        if (!config.JWT_TOKEN) {
+            throw new Error('JWT token must be provided.');
+        }
         try {
             const httpServer: http.Server = new http.Server(app);
             const socketIO: Server = await this.createSocketIO(httpServer);
@@ -108,11 +126,26 @@ export class ChatWaveServer {
     }
 
     private startHttpServer(httpServer: http.Server): void {
+        log.info(`Worker started with pid ${process.pid}`);
         log.info(`Server started with pid ${process.pid}`);
         httpServer.listen(SERVER_PORT, () => {
             log.info(`Server runnig on port ${SERVER_PORT}`);
         });
     }
 
-    private socketIOConn(io: Server): void {}
+    private socketIOConn(io: Server): void {
+        const postSocketHandler: SocketIOPostHandler = new SocketIOPostHandler(io);
+        const followerSocketHandler: SocketIOFollowerHandler = new SocketIOFollowerHandler(io);
+        const userSocketHandler: SocketIOUserHandler = new SocketIOUserHandler(io);
+        const notificationSocketHandler: SocketIONotificationHandler = new SocketIONotificationHandler();
+        const imageSocketHandler: SocketIOImageHandler = new SocketIOImageHandler();
+        const chatSocketHandler: SocketIOChatHandler = new SocketIOChatHandler(io);
+
+        postSocketHandler.listen();
+        followerSocketHandler.listen();
+        userSocketHandler.listen();
+        notificationSocketHandler.listen(io);
+        imageSocketHandler.listen(io);
+        chatSocketHandler.listen();
+    }
 }
