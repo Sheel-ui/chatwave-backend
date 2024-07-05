@@ -1,0 +1,40 @@
+@baseUrl = http://localhost:3000
+@urlPath = api/v1
+
+###
+POST {{baseUrl}}/{{urlPath}}/images/profile
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA0gAAAMyAQMAAABtkHM/AAAABlBMVEUAAAD///+l2Z/dAAAAAXRSTlMAQObYZgAAAAFiS0dEAf8CLd4AAABrSURBVBgZ7cGBAAAAAMOg+1NP4AjVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjgBSwwABwrL8wAAAAABJRU5ErkJggg=="
+}
+
+###
+POST {{baseUrl}}/{{urlPath}}/images/background
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "image": "https://res.cloudinary.com/<cloud_name>/image/upload/v1660065324/62f2962c6b761b208a728e91"
+}
+
+###
+DELETE {{baseUrl}}/{{urlPath}}/images/66865e515b55a9c2a6ccf340
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+DELETE {{baseUrl}}/{{urlPath}}/images/background/668532cfa5648a4563007678
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/images/668532cfa5648a4563007678
+Content-Type: application/json
+Accept: application/json
+withCredentials: true

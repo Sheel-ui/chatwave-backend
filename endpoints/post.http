@@ -1,0 +1,87 @@
+@baseUrl = http://localhost:3000
+@urlPath = api/v1
+
+###
+POST {{baseUrl}}/{{urlPath}}/post
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+    "post": "",
+    "bgColor": "",
+    "privacy": "",
+    "gifUrl": "",
+    "profilePicture": "",
+    "feelings": ""
+}
+
+###
+POST {{baseUrl}}/{{urlPath}}/post/image/post
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+    "post": "",
+    "bgColor": "",
+    "privacy": "",
+    "gifUrl": "",
+    "profilePicture": "",
+    "feelings": "",
+    "image": ""
+}
+
+
+###
+GET {{baseUrl}}/{{urlPath}}/post/all/1
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/post/images/1
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+DELETE {{baseUrl}}/{{urlPath}}/post/<postId>
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+PUT {{baseUrl}}/{{urlPath}}/post/<postId>
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+    "post": "test3post",
+    "bgColor": "",
+    "privacy": "",
+    "gifUrl": "",
+    "profilePicture": "",
+    "feelings": "",
+    "imgId": "",
+    "imgVersion": ""
+}
+
+###
+PUT {{baseUrl}}/{{urlPath}}/post/image/<postId>
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+    "post": "",
+    "bgColor": "",
+    "privacy": "",
+    "gifUrl": "",
+    "profilePicture": "",
+    "feelings": "",
+    "image": "",
+    "imgId": "",
+    "imgVersion": "",
+}
