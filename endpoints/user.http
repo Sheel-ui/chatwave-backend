@@ -1,0 +1,89 @@
+@baseUrl = http://localhost:5000
+@urlPath = api/v1
+
+###
+GET {{baseUrl}}/{{urlPath}}/user/all/1
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/user/profile
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/user/profile/<uid>
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/user/profile/posts/<username>/<userid>/<uid>
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/user/profile/user/suggestions
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/user/profile/search/danny
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+PUT {{baseUrl}}/{{urlPath}}/user/profile/change-password
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "currentPassword": "qwerty1",
+  "newPassword": "qwerty",
+  "confirmPassword": "qwerty"
+}
+
+###
+PUT {{baseUrl}}/{{urlPath}}/user/profile/basic-info
+content-type: application/json
+Accept: 'application/json'
+withCredentials: true
+
+{
+  "quote": "",
+  "work": "",
+  "school": "",
+  "location": ""
+}
+
+###
+PUT {{baseUrl}}/{{urlPath}}/user/profile/social-links
+content-type: application/json
+Accept: 'application/json'
+withCredentials: true
+
+{
+  "instagram": "",
+  "twitter": "",
+  "facebook": "",
+  "youtube": ""
+}
+
+###
+PUT {{baseUrl}}/{{urlPath}}/user/profile/settings
+content-type: application/json
+Accept: 'application/json'
+withCredentials: true
+
+{
+  "messages": false,
+  "reactions": false,
+  "comments": false,
+  "follows": true
+}

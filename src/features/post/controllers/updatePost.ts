@@ -99,7 +99,7 @@ export class Update {
             key: `${req.currentUser!.userId}`,
             imgId: result.public_id,
             imgVersion: result.version.toString()
-          });
+        });
         return result;
     }
 }
