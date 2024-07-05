@@ -3,11 +3,10 @@ import Logger from 'bunyan';
 import { config } from '@root/config';
 import { ServerError } from '@global/helpers/errorHandler';
 import { ISavePostToCache, IPostDocument } from '@post/interfaces/postInterface';
-import { IReactions } from '@reaction/interfaces/reactionInterface';
 import { Helpers } from '@global/helpers/helpers';
 import { RedisCommandRawReply } from '@redis/client/dist/lib/commands';
+import { IReactions } from '@reaction/interfaces/reactionInterface';
 
-// Create a logger instance for the PostCache class
 const log: Logger = config.createLogger('postCache');
 
 export type PostCacheMultiType = string | number | Buffer | RedisCommandRawReply[] | IPostDocument | IPostDocument[];
@@ -17,11 +16,8 @@ export class PostCache extends BaseCache {
         super('postCache');
     }
 
-    // Function to save post data to the cache
     public async savePostToCache(data: ISavePostToCache): Promise<void> {
         const { key, currentUserId, uId, createdPost } = data;
-
-        // Destructure createdPost object
         const {
             _id,
             userId,
@@ -43,49 +39,60 @@ export class PostCache extends BaseCache {
             createdAt
         } = createdPost;
 
-        const dataToSave = {
-            _id: `${_id}`,
-            userId: `${userId}`,
-            username: `${username}`,
-            email: `${email}`,
-            avatarColor: `${avatarColor}`,
-            profilePicture: `${profilePicture}`,
-            post: `${post}`,
-            bgColor: `${bgColor}`,
-            feelings: `${feelings}`,
-            privacy: `${privacy}`,
-            gifUrl: `${gifUrl}`,
-            commentsCount: `${commentsCount}`,
-            reactions: JSON.stringify(reactions),
-            imgVersion: `${imgVersion}`,
-            imgId: `${imgId}`,
-            videoId: `${videoId}`,
-            videoVersion: `${videoVersion}`,
-            createdAt: `${createdAt}`
-        };
+        const firstList: string[] = [
+            '_id',
+            `${_id}`,
+            'userId',
+            `${userId}`,
+            'username',
+            `${username}`,
+            'email',
+            `${email}`,
+            'avatarColor',
+            `${avatarColor}`,
+            'profilePicture',
+            `${profilePicture}`,
+            'post',
+            `${post}`,
+            'bgColor',
+            `${bgColor}`,
+            'feelings',
+            `${feelings}`,
+            'privacy',
+            `${privacy}`,
+            'gifUrl',
+            `${gifUrl}`
+        ];
+
+        const secondList: string[] = [
+            'commentsCount',
+            `${commentsCount}`,
+            'reactions',
+            JSON.stringify(reactions),
+            'imgVersion',
+            `${imgVersion}`,
+            'imgId',
+            `${imgId}`,
+            'videoId',
+            `${videoId}`,
+            'videoVersion',
+            `${videoVersion}`,
+            'createdAt',
+            `${createdAt}`
+        ];
+        const dataToSave: string[] = [...firstList, ...secondList];
 
         try {
             if (!this.client.isOpen) {
                 await this.client.connect();
             }
 
-            // Retrieve the current posts count for the user
             const postCount: string[] = await this.client.HMGET(`users:${currentUserId}`, 'postsCount');
-
-            // Create a multi transaction to perform multiple operations atomically
             const multi: ReturnType<typeof this.client.multi> = this.client.multi();
-
-            // Add the post to the sorted set with the score based on uId
             await this.client.ZADD('post', { score: parseInt(uId, 10), value: `${key}` });
-            for (const [itemKey, itemValue] of Object.entries(dataToSave)) {
-                multi.HSET(`posts:${key}`, `${itemKey}`, `${itemValue}`);
-            }
-
-            // Increment the user's postsCount
+            multi.HSET(`posts:${key}`, dataToSave);
             const count: number = parseInt(postCount[0], 10) + 1;
-            multi.HSET(`users:${currentUserId}`, 'postsCount', count);
-
-            // Execute the multi transaction
+            multi.HSET(`users:${currentUserId}`, ['postsCount', count]);
             multi.exec();
         } catch (error) {
             log.error(error);
@@ -100,7 +107,6 @@ export class PostCache extends BaseCache {
             }
 
             const reply: string[] = await this.client.ZRANGE(key, start, end, { REV: true });
-            // Create a multi command to fetch hash values for each post key
             const multi: ReturnType<typeof this.client.multi> = this.client.multi();
             for (const value of reply) {
                 multi.HGETALL(`posts:${value}`);
@@ -108,7 +114,6 @@ export class PostCache extends BaseCache {
             const replies: PostCacheMultiType = (await multi.exec()) as PostCacheMultiType;
             const postReplies: IPostDocument[] = [];
             for (const post of replies as IPostDocument[]) {
-                // Parse and format specific fields as needed
                 post.commentsCount = Helpers.parseJson(`${post.commentsCount}`) as number;
                 post.reactions = Helpers.parseJson(`${post.reactions}`) as IReactions;
                 post.createdAt = new Date(Helpers.parseJson(`${post.createdAt}`)) as Date;
@@ -128,7 +133,6 @@ export class PostCache extends BaseCache {
                 await this.client.connect();
             }
             const count: number = await this.client.ZCARD('post');
-            // return count
             return count;
         } catch (error) {
             log.error(error);
@@ -150,7 +154,6 @@ export class PostCache extends BaseCache {
             const replies: PostCacheMultiType = (await multi.exec()) as PostCacheMultiType;
             const postWithImages: IPostDocument[] = [];
             for (const post of replies as IPostDocument[]) {
-                // if post has image id and version or gifUrl
                 if ((post.imgId && post.imgVersion) || post.gifUrl) {
                     post.commentsCount = Helpers.parseJson(`${post.commentsCount}`) as number;
                     post.reactions = Helpers.parseJson(`${post.reactions}`) as IReactions;
@@ -159,6 +162,34 @@ export class PostCache extends BaseCache {
                 }
             }
             return postWithImages;
+        } catch (error) {
+            log.error(error);
+            throw new ServerError('Server error. Try again.');
+        }
+    }
+
+    public async getPostsWithVideosFromCache(key: string, start: number, end: number): Promise<IPostDocument[]> {
+        try {
+            if (!this.client.isOpen) {
+                await this.client.connect();
+            }
+
+            const reply: string[] = await this.client.ZRANGE(key, start, end, { REV: true });
+            const multi: ReturnType<typeof this.client.multi> = this.client.multi();
+            for (const value of reply) {
+                multi.HGETALL(`posts:${value}`);
+            }
+            const replies: PostCacheMultiType = (await multi.exec()) as PostCacheMultiType;
+            const postWithVideos: IPostDocument[] = [];
+            for (const post of replies as IPostDocument[]) {
+                if (post.videoId && post.videoVersion) {
+                    post.commentsCount = Helpers.parseJson(`${post.commentsCount}`) as number;
+                    post.reactions = Helpers.parseJson(`${post.reactions}`) as IReactions;
+                    post.createdAt = new Date(Helpers.parseJson(`${post.createdAt}`)) as Date;
+                    postWithVideos.push(post);
+                }
+            }
+            return postWithVideos;
         } catch (error) {
             log.error(error);
             throw new ServerError('Server error. Try again.');
@@ -209,7 +240,6 @@ export class PostCache extends BaseCache {
             if (!this.client.isOpen) {
                 await this.client.connect();
             }
-            // Remove from cache
             const postCount: string[] = await this.client.HMGET(`users:${currentUserId}`, 'postsCount');
             const multi: ReturnType<typeof this.client.multi> = this.client.multi();
             multi.ZREM('post', `${key}`);
@@ -217,7 +247,7 @@ export class PostCache extends BaseCache {
             multi.DEL(`comments:${key}`);
             multi.DEL(`reactions:${key}`);
             const count: number = parseInt(postCount[0], 10) - 1;
-            multi.HSET(`users:${currentUserId}`, 'postsCount', count);
+            multi.HSET(`users:${currentUserId}`, ['postsCount', count]);
             await multi.exec();
         } catch (error) {
             log.error(error);
@@ -226,36 +256,33 @@ export class PostCache extends BaseCache {
     }
 
     public async updatePostInCache(key: string, updatedPost: IPostDocument): Promise<IPostDocument> {
-        // Destructure
         const { post, bgColor, feelings, privacy, gifUrl, imgVersion, imgId, videoId, videoVersion, profilePicture } = updatedPost;
-        const dataToSave = {
-            post: `${post}`,
-            bgColor: `${bgColor}`,
-            feelings: `${feelings}`,
-            privacy: `${privacy}`,
-            gifUrl: `${gifUrl}`,
-            videoId: `${videoId}`,
-            videoVersion: `${videoVersion}`,
-            profilePicture: `${profilePicture}`,
-            imgVersion: `${imgVersion}`,
-            imgId: `${imgId}`
-        };
+        const firstList: string[] = [
+            'post',
+            `${post}`,
+            'bgColor',
+            `${bgColor}`,
+            'feelings',
+            `${feelings}`,
+            'privacy',
+            `${privacy}`,
+            'gifUrl',
+            `${gifUrl}`,
+            'videoId',
+            `${videoId}`,
+            'videoVersion',
+            `${videoVersion}`
+        ];
+        const secondList: string[] = ['profilePicture', `${profilePicture}`, 'imgVersion', `${imgVersion}`, 'imgId', `${imgId}`];
+        const dataToSave: string[] = [...firstList, ...secondList];
 
-        // check client connection
         try {
             if (!this.client.isOpen) {
                 await this.client.connect();
             }
-
-            // Save updated data
-            for (const [itemKey, itemValue] of Object.entries(dataToSave)) {
-                await this.client.HSET(`posts:${key}`, `${itemKey}`, `${itemValue}`);
-            }
-
-            // Create multi for redis queries
+            await this.client.HSET(`posts:${key}`, dataToSave);
             const multi: ReturnType<typeof this.client.multi> = this.client.multi();
             multi.HGETALL(`posts:${key}`);
-
             const reply: PostCacheMultiType = (await multi.exec()) as PostCacheMultiType;
             const postReply = reply as IPostDocument[];
             postReply[0].commentsCount = Helpers.parseJson(`${postReply[0].commentsCount}`) as number;
