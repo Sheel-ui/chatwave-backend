@@ -104,7 +104,7 @@ export class Create {
             key: `${req.currentUser!.userId}`,
             imgId: result.public_id,
             imgVersion: result.version.toString()
-          });
+        });
         res.status(HTTP_STATUS.CREATED).json({ message: 'Post created with image successfully' });
     }
 }

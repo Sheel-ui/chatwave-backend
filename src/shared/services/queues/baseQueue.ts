@@ -5,7 +5,7 @@ import { config } from '@root/config';
 import { BullAdapter } from '@bull-board/api/bullAdapter';
 import { createBullBoard } from '@bull-board/api';
 import { IAuthJob } from '@auth/interfaces/authInterface';
-import { IEmailJob } from '@user/interfaces/userInterface';
+import { IEmailJob, IUserJob } from '@user/interfaces/userInterface';
 import { IPostJobData } from '@post/interfaces/postInterface';
 import { IReactionJob } from '@reaction/interfaces/reactionInterface';
 import { ICommentJob } from '@comment/interfaces/commentInterface';
@@ -13,7 +13,17 @@ import { INotificationJobData } from '@notification/interfaces/notificationInter
 import { IFileImageJobData } from '@image/interfaces/imageInterface';
 import { IChatJobData, IMessageData } from '@chat/interfaces/chatInterface';
 
-type IBaseJobData = IAuthJob | IEmailJob | IPostJobData | IReactionJob | ICommentJob | INotificationJobData | IFileImageJobData | IChatJobData | IMessageData;
+type IBaseJobData =
+    | IAuthJob
+    | IEmailJob
+    | IPostJobData
+    | IReactionJob
+    | ICommentJob
+    | INotificationJobData
+    | IFileImageJobData
+    | IChatJobData
+    | IMessageData
+    | IUserJob;
 
 let bullAdapters: BullAdapter[] = [];
 export let serverAdapter: ExpressAdapter;
