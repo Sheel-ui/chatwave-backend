@@ -5,6 +5,7 @@ import http from 'http';
 import cors from 'cors';
 import helmet from 'helmet';
 import hpp from 'hpp';
+import apiStats from 'swagger-stats';
 import compression from 'compression';
 import cookieSession from 'cookie-session';
 import HTTP_STATUS from 'http-status-codes';
@@ -35,6 +36,7 @@ export class ChatWaveServer {
         this.securityMiddleware(this.app);
         this.standardMiddleware(this.app);
         this.routeMiddleware(this.app);
+        this.apiMonitoring(this.app);
         this.globalErrorHandler(this.app);
         this.startServer(this.app);
     }
@@ -70,6 +72,14 @@ export class ChatWaveServer {
         routes(app);
     }
 
+    private apiMonitoring(app: Application): void {
+        app.use(
+            apiStats.getMiddleware({
+                uriPath: '/api-monitoring'
+            })
+        );
+    }
+
     private globalErrorHandler(app: Application): void {
         app.all('*', (req: Request, res: Response) => {
             res.status(HTTP_STATUS.NOT_FOUND).json({
@@ -87,6 +97,9 @@ export class ChatWaveServer {
     }
 
     private async startServer(app: Application): Promise<void> {
+        if (!config.JWT_TOKEN) {
+            throw new Error('JWT token must be provided.');
+        }
         try {
             const httpServer: http.Server = new http.Server(app);
             const socketIO: Server = await this.createSocketIO(httpServer);
@@ -113,6 +126,7 @@ export class ChatWaveServer {
     }
 
     private startHttpServer(httpServer: http.Server): void {
+        log.info(`Worker started with pid ${process.pid}`);
         log.info(`Server started with pid ${process.pid}`);
         httpServer.listen(SERVER_PORT, () => {
             log.info(`Server runnig on port ${SERVER_PORT}`);

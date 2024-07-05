@@ -21,21 +21,31 @@ export class Delete {
 
     public async backgroundImage(req: Request, res: Response): Promise<void> {
         const image: IFileImageDocument = await imageService.getImageByBackgroundId(req.params.bgImageId);
-        socketIOImageObject.emit('delete image', image?._id);
-        const bgImageId: Promise<IUserDocument> = userCache.updateSingleUserItemInCache(
-            `${req.currentUser!.userId}`,
-            'bgImageId',
-            ''
-        ) as Promise<IUserDocument>;
-        const bgImageVersion: Promise<IUserDocument> = userCache.updateSingleUserItemInCache(
-            `${req.currentUser!.userId}`,
-            'bgImageVersion',
-            ''
-        ) as Promise<IUserDocument>;
-        (await Promise.all([bgImageId, bgImageVersion])) as [IUserDocument, IUserDocument];
-        imageQueue.addImageJob('removeImageFromDB', {
-            imageId: image?._id
-        });
-        res.status(HTTP_STATUS.OK).json({ message: 'Image deleted successfully' });
+
+        if (!image) {
+            res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Image not found' });
+        }
+
+        if (typeof image._id === 'string') {
+            res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Invalid image ID type' });
+            socketIOImageObject.emit('delete image', image?._id);
+            const bgImageId: Promise<IUserDocument> = userCache.updateSingleUserItemInCache(
+                `${req.currentUser!.userId}`,
+                'bgImageId',
+                ''
+            ) as Promise<IUserDocument>;
+            const bgImageVersion: Promise<IUserDocument> = userCache.updateSingleUserItemInCache(
+                `${req.currentUser!.userId}`,
+                'bgImageVersion',
+                ''
+            ) as Promise<IUserDocument>;
+            (await Promise.all([bgImageId, bgImageVersion])) as [IUserDocument, IUserDocument];
+            imageQueue.addImageJob('removeImageFromDB', {
+                imageId: image?._id
+            });
+            res.status(HTTP_STATUS.OK).json({ message: 'Image deleted successfully' });
+        } else {
+            res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Image not found' });
+        }
     }
 }
